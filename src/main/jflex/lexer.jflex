@@ -96,7 +96,7 @@ MultiComment = \$\$(.|\n)*\$\$
 
 
     /* Change state */
-    \"              { sb.setLength(0); yybegin(STRING); }
+    \"              { sb.setLength(0); sb.append(yytext()); yybegin(STRING); }
 
 
     /* Tokens that should be recognised but ignored*/
@@ -111,14 +111,14 @@ MultiComment = \$\$(.|\n)*\$\$
 
 <STRING>{
 
-    \"                      { yybegin(YYINITIAL); out.println("string: "+sb.toString());}
+    \"                      { sb.append(yytext()); yybegin(YYINITIAL); out.println("string: "+sb.toString());}
 
     [^\n\r\"\'\\]+          { sb.append(yytext()); }
     \\n                     { sb.append(yytext()); }
     \\t                     { sb.append(yytext()); }
     \\r                     { sb.append(yytext()); }
-    \\\"                    { sb.append('\"'); }
-    \\\'                    { sb.append('\''); }
+    \\\"                    { sb.append(yytext()); }
+    \\\'                    { sb.append(yytext()); }
 
 }
 
