@@ -20,17 +20,21 @@ import static java.lang.System.out;
 
 %}
 
-Identifier  = [a-zA-Z][:jletterdigit:]*
+Identifier   = [a-zA-Z][:jletterdigit:]*
 
-Integer     = [0-9]+
+Integer      = [0-9]+
 
-Hexadecimal = "\x"[0-9a-fA-F]{2}
+Hexadecimal  = "\x"[0-9a-fA-F]{2}
 
-Escape_char = \\n | \\t | \\r | \\ | \' | \" | {Hexadecimal} | \0
+Escape_char  = \\n | \\t | \\r | \\ | \' | \" | {Hexadecimal} | \0
 
-Delim =      [ \t\n]
-Ws    =      {Delim}+
+Delim        = [ \t\n\r]
 
+Empty        = {Delim}+
+
+Comment      = \$[^\n\$]*
+
+MultiComment = \$\$(.|\n)*\$\$
 
 %state STRING
 
@@ -70,7 +74,7 @@ Ws    =      {Delim}+
     "-"             { out.println("oper: MINUS"); }
     "*"             { out.println("oper: MULTILPLY"); }
     "/"             { out.println("oper: DIVIDE"); }
-    "#"             { out.println("oper: SHARP"); }
+    "#"             { out.println("oper: NOT EQUAL"); }
     "="             { out.println("oper: ASSIGN"); }
     "<"             { out.println("oper: LESS_THAN"); }       
     ">"             { out.println("oper: GREATER_THAN"); }
@@ -88,14 +92,20 @@ Ws    =      {Delim}+
     ","             { out.println("space: COMMA"); }
     ";"             { out.println("space: SEMICOLON"); }
     ":"             { out.println("space: COLON"); }
-    // "<-"            { out.println(""); }
+    "<-"            { out.println("space: POINTER_LIKE"); }
 
 
-    /*Change state */
+    /* Change state */
     \"              { sb.setLength(0); yybegin(STRING); }
 
 
-    {Ws}            {}
+    /* Tokens that should be recognised but ignored*/
+
+    {Empty}          {}
+    
+    {Comment}        {}
+    
+    {MultiComment}   {}
 
 }
 
