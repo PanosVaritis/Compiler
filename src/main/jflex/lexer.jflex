@@ -1,6 +1,7 @@
 /**
 This code is part of the compiler class in hua university
 */
+package dit.hua.compiler;
 
 import static java.lang.System.out;
 
