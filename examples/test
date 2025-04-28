@@ -1,0 +1,4 @@
+puts("The name is Pano\'s Varitis!!!\n\t");
+x = 'a'
+x = '\n'
+x = '\0'

@@ -26,7 +26,11 @@ Integer      = [0-9]+
 
 Hexadecimal  = "\x"[0-9a-fA-F]{2}
 
-Escape_char  = \\n | \\t | \\r | \\ | \' | \" | {Hexadecimal} | \0
+Escape_char  = \\n | \\t | \\r | \\ | \\\' | \\\" | {Hexadecimal} | [:jletter:] | \\0
+
+Quote        = \'   
+
+Match        = {Quote}{Escape_char}{Quote}
 
 Delim        = [ \t\n\r]
 
@@ -68,6 +72,10 @@ MultiComment = \$\$(.|\n)*\$\$
 
     {Integer}       { out.println("number: "+yytext()); }
 
+    /* Any single constant character */
+
+    {Match}   { out.println("special: "+yytext()); }
+
     /* Operators */
 
     "+"             { out.println("oper: PLUS"); }
@@ -95,7 +103,7 @@ MultiComment = \$\$(.|\n)*\$\$
     "<-"            { out.println("space: POINTER_LIKE"); }
 
 
-    /* Change state */
+    /* Change state (Go and match strings) */
     \"              { sb.setLength(0); sb.append(yytext()); yybegin(STRING); }
 
 
