@@ -10,7 +10,17 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>dit.hua.compiler.Compiler</exec.mainClass>
+        <jflex.version>1.8.2</jflex.version>
+        <java-cup.version>11b-20160615-2</java-cup.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.vbmacher</groupId>
+            <artifactId>java-cup-runtime</artifactId>
+            <version>${java-cup.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -26,9 +36,34 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>dit.hua.compiler.Compiler</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                    <id>make-assembly</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>de.jflex</groupId>
                 <artifactId>jflex-maven-plugin</artifactId>
-                <version>1.8.2</version>
+                <version>${jflex.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -44,18 +79,40 @@
                 <version>3.2.0</version>
                 <executions>
                     <execution>
-                    <id>add-source</id>
-                    <phase>generate-sources</phase>
-                    <goals>
-                        <goal>add-source</goal> 
-                    </goals>
-                    <configuration>
-                        <sources>
-                        <source>${project.build.directory}/generated-sources/jflex</source>
-                        </sources>
-                    </configuration>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal> 
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/jflex</source>
+                                <source>${project.build.directory}/generated-sources/cup</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.vbmacher</groupId>
+                <artifactId>cup-maven-plugin</artifactId>
+                <version>${java-cup.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <cupFile>src/main/cup/parser.cup</cupFile>
+                    <outputDirectory>${project.build.directory}/generated-sources/cup</outputDirectory>
+                    <packageName>gr.hua.dit.compiler</packageName>
+                    <className>Parser</className>
+                    <symbolsName>Symbols</symbolsName>
+                    <expectedConflicts>1</expectedConflicts>
+                </configuration>
             </plugin>
 
 
