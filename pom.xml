@@ -22,7 +22,7 @@
         </dependency>
     </dependencies>
 
-    <build>
+    <build> 
         <plugins>
 
             <plugin>
@@ -36,6 +36,61 @@
             </plugin>
 
             <plugin>
+                <groupId>de.jflex</groupId>
+                <artifactId>jflex-maven-plugin</artifactId>
+                <version>${jflex.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.vbmacher</groupId>
+                <artifactId>cup-maven-plugin</artifactId>
+                <version>${java-cup.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                    <configuration>
+                        <parserClassName>Parser</parserClassName>
+                        <symbolsClassName>Symbols</symbolsClassName>
+                        <outputDirectory>${project.build.directory}/generated-sources/cup</outputDirectory>
+                        <packageName>dit.hua.compiler</packageName>
+                        <!-- <cupFile>${basedir}/src/main/cup/parser.cup</cupFile> -->
+                        <expectedConflicts>1</expectedConflicts>
+                    </configuration>
+            </plugin>
+
+            <!-- <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal> 
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/jflex</source>
+                                <source>${project.build.directory}/generated-sources/cup</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin> -->
+
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.3.0</version>
@@ -58,64 +113,7 @@
                     </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>de.jflex</groupId>
-                <artifactId>jflex-maven-plugin</artifactId>
-                <version>${jflex.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal> 
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/jflex</source>
-                                <source>${project.build.directory}/generated-sources/cup</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>com.github.vbmacher</groupId>
-                <artifactId>cup-maven-plugin</artifactId>
-                <version>${java-cup.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <cupFile>src/main/cup/parser.cup</cupFile>
-                    <outputDirectory>${project.build.directory}/generated-sources/cup</outputDirectory>
-                    <packageName>gr.hua.dit.compiler</packageName>
-                    <className>Parser</className>
-                    <symbolsName>Symbols</symbolsName>
-                    <expectedConflicts>1</expectedConflicts>
-                </configuration>
-            </plugin>
-
-
+            </plugin> -->
 
         </plugins>
     </build>

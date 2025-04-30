@@ -1,10 +1,45 @@
-package dit.hua.compiler;
+/*
+    This code is part of the compiler course in hua university
+*/
 
-import java.util.Scanner;
+// package dit.hua.compiler;
+import java_cup.runtime.Symbol;
+// import java.util.Scanner;
 
-parser code { 
-    public static void main(String[] args) throws Exception {
-        parser p = new parser(new Scanner(System.in));
-        p.parse();
-    }
-}
+// parser code 
+// {:
+//     public static void main(String[] args) throws Exception {
+//         parser p = new parser(new Scanner(System.in));
+//         p.parse();
+//     }
+// :};
+
+//Terminal reserved words
+terminal AND, FUN, NOTHING, VAR, CHAR, IF, OR, WHILE, DIV, INT;
+terminal REF, DO, MOD, RETURN, ELSE, NOT, THEN;
+
+//Terminal identifiers
+terminal java.lang.String IDENTIFIER;
+
+//Terminal Integers
+terminal java.lang.Integer INT_LITERAL;
+
+//Terminal operators
+terminal PLUS, MINUS, MULTIPLY, DIVISION;
+terminal NEQUAL, ASSSING, LT, GT, LE, GE;
+
+//Terminal spacers
+terminal LPAREN, RPAREN, LBRACKET, RBRACKET;
+terminal LCURLY, RCURLY, COMMA, SEMICOLON, COLON, PLIKE;
+
+//Terminal for string
+terminal java.lang.String STRING_LITERAL;
+
+//Terminal for single constant characters
+terminal CHAR_LITERAL;
+
+non terminal program;
+
+start with program;
+
+program ::= ;

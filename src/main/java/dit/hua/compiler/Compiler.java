@@ -16,17 +16,13 @@ public class Compiler {
     
         Reader r = new InputStreamReader(System.in);
         Lexer l = new Lexer(r);
+        Parser p = new Parser(l);
 
         try {
-        int token = l.yylex();
-        while (token != Lexer.YYEOF) { 
-            System.out.println("Token type: "+ token + " lexeme: " + l.yytext());
-            token = l.yylex();
+            Object result = p.parse().value;
+        } catch (Exception e){
+            System.err.println("Error: " + e.getMessage());
         }
-
-        } catch (IOException e) { 
-            System.err.println(e.getMessage());
         }
-    }
 }
 

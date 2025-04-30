@@ -4,6 +4,7 @@ This code is part of the compiler class in hua university
 package dit.hua.compiler;
 
 import static java.lang.System.out;
+import java_cup.runtime.Symbol;
 
 %%
 
@@ -12,11 +13,24 @@ import static java.lang.System.out;
 %integer
 %line
 %column
+%cup
+
+%eofval{
+    return createSymbol (Symbols.EOF);
+%eofval}
 
 
 %{
 
-    StringBuffer sb = new StringBuffer();
+    private StringBuffer sb = new StringBuffer();
+
+    private Symbol createSymbol (int type){
+        return new Symbol (type, yyline+1, yycolumn+1);
+    }
+
+    private Symbol createSymbol (int type, Object value){
+        return new Symbol (type, yyline+1, yycolumn+1, value);
+    }
 
 %}
 
@@ -46,61 +60,61 @@ MultiComment = \$\$(.|\n)*\$\$
 <YYINITIAL>{
     /* Reserved Keywords */
 
-    "and"           { out.println("token: "+yytext()); }
-    "fun"           { out.println("token: "+yytext()); }
-    "nothing"       { out.println("token: "+yytext()); }
-    "var"           { out.println("token: "+yytext()); }
-    "char"          { out.println("token: "+yytext()); }
-    "if"            { out.println("token: "+yytext()); }
-    "or"            { out.println("token: "+yytext()); }
-    "while"         { out.println("token: "+yytext()); }
-    "div"           { out.println("token: "+yytext()); }
-    "int"           { out.println("token: "+yytext()); }
-    "ref"           { out.println("token: "+yytext()); }
-    "do"            { out.println("token: "+yytext()); }
-    "mod"           { out.println("token: "+yytext()); }
-    "return"        { out.println("token: "+yytext()); }
-    "else"          { out.println("token: "+yytext()); }
-    "not"           { out.println("token: "+yytext()); }
-    "then"          { out.println("token: "+yytext()); }
+    "and"           { return createSymbol(Symbols.AND); }
+    "fun"           { return createSymbol(Symbols.FUN); }
+    "nothing"       { return createSymbol(Symbols.NOTHING); }
+    "var"           { return createSymbol(Symbols.VAR); }
+    "char"          { return createSymbol(Symbols.CHAR); }
+    "if"            { return createSymbol(Symbols.IF); }
+    "or"            { return createSymbol(Symbols.OR); }
+    "while"         { return createSymbol(Symbols.WHILE); }
+    "div"           { return createSymbol(Symbols.DIV); }
+    "int"           { return createSymbol(Symbols.INT); }
+    "ref"           { return createSymbol(Symbols.REF); }
+    "do"            { return createSymbol(Symbols.DO); }
+    "mod"           { return createSymbol(Symbols.MOD); }
+    "return"        { return createSymbol(Symbols.RETURN); }
+    "else"          { return createSymbol(Symbols.ELSE); }
+    "not"           { return createSymbol(Symbols.NOT); }
+    "then"          { return createSymbol(Symbols.THEN); }
 
     /* Identifiers */
 
-    {Identifier}    { out.println("identifier: "+yytext()); }
+    {Identifier}    { return createSymbol(Symbols.IDENTIFIER, yytext()); }
 
     /* Number */
 
-    {Integer}       { out.println("number: "+yytext()); }
+    {Integer}       { return createSymbol(Symbols.INT_LITERAL, Integer.valueof(yytext())); }
 
     /* Any single constant character */
 
-    {Match}   { out.println("special: "+yytext()); }
+    {Match}   { return createSymbol(Symbols.CHAR_LITERAL, yytext()); }
 
     /* Operators */
 
-    "+"             { out.println("oper: PLUS"); }
-    "-"             { out.println("oper: MINUS"); }
-    "*"             { out.println("oper: MULTILPLY"); }
-    "/"             { out.println("oper: DIVIDE"); }
-    "#"             { out.println("oper: NOT EQUAL"); }
-    "="             { out.println("oper: ASSIGN"); }
-    "<"             { out.println("oper: LESS_THAN"); }       
-    ">"             { out.println("oper: GREATER_THAN"); }
-    "<="            { out.println("oper: LESS_THAN_OR_EQUAL"); }
-    ">="            { out.println("oper: GREATER_THAN_OR_EQUAL"); }
+    "+"             { return createSymbol(Symbols.PLUS); }
+    "-"             { return createSymbol(Symbols.MINUS); }
+    "*"             { return createSymbol(Symbols.MULTILPLY); }
+    "/"             { return createSymbol(Symbols.DIVISION); }
+    "#"             { return createSymbol(Symbols.NEQUAL); }
+    "="             { return createSymbol(Symbols.ASSIGN); }
+    "<"             { return createSymbol(Symbols.LT); }      
+    ">"             { return createSymbol(Symbols.GT); }
+    "<="            { return createSymbol(Symbols.LE); }
+    ">="            { return createSymbol(Symbols.GE); }
 
     /* Spacers */
 
-    "("             { out.println("space: LEFT_PAR"); }
-    ")"             { out.println("space: RIGHT_PAR"); }
-    "["             { out.println("space: LEFT_BRACKET"); }
-    "]"             { out.println("space: RIGHT_BRACKET"); }
-    "{"             { out.println("space: LEFT_CURLY_BRAC"); }
-    "}"             { out.println("space: RIGHT_CURLY_BRAC"); }
-    ","             { out.println("space: COMMA"); }
-    ";"             { out.println("space: SEMICOLON"); }
-    ":"             { out.println("space: COLON"); }
-    "<-"            { out.println("space: POINTER_LIKE"); }
+    "("             { return createSymbol(Symbols.LPAREN); }
+    ")"             { return createSymbol(Symbols.RPAREN); }
+    "["             { return createSymbol(Symbols.LBRACKET); }
+    "]"             { return createSymbol(Symbols.RBRACKET); }
+    "{"             { return createSymbol(Symbols.LCURLY); }
+    "}"             { return createSymbol(Symbols.RCURLY); }
+    ","             { return createSymbol(Symbols.COMMA); }
+    ";"             { return createSymbol(Symbols.SEMICOLON); }
+    ":"             { return createSymbol(Symbols.COLON); }
+    "<-"            { return createSymbol(Symbols.PLIKE); }
 
 
     /* Change state (Go and match strings) */
@@ -119,7 +133,8 @@ MultiComment = \$\$(.|\n)*\$\$
 
 <STRING>{
 
-    \"                      { sb.append(yytext()); yybegin(YYINITIAL); out.println("string: "+sb.toString());}
+    \"                      { sb.append(yytext()); yybegin(YYINITIAL); 
+                                 return createSymbol(Symbols.STRING_LITERAL, sb.toString()); }
 
     [^\n\r\"\'\\]+          { sb.append(yytext()); }
     \\n                     { sb.append(yytext()); }
