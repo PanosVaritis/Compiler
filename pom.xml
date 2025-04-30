@@ -60,8 +60,8 @@
                     </execution>
                 </executions>
                     <configuration>
-                        <parserClassName>Parser</parserClassName>
-                        <symbolsClassName>Symbols</symbolsClassName>
+                        <!-- <parserClassName>Parser</parserClassName> -->
+                        <!-- <symbolsClassName>Symbols</symbolsClassName> -->
                         <outputDirectory>${project.build.directory}/generated-sources/cup</outputDirectory>
                         <packageName>dit.hua.compiler</packageName>
                         <!-- <cupFile>${basedir}/src/main/cup/parser.cup</cupFile> -->

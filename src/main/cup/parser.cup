@@ -26,7 +26,7 @@ terminal java.lang.Integer INT_LITERAL;
 
 //Terminal operators
 terminal PLUS, MINUS, MULTIPLY, DIVISION;
-terminal NEQUAL, ASSSING, LT, GT, LE, GE;
+terminal NEQUAL, ASSIGN, LT, GT, LE, GE;
 
 //Terminal spacers
 terminal LPAREN, RPAREN, LBRACKET, RBRACKET;

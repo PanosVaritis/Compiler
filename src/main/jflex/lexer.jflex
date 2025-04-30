@@ -16,7 +16,7 @@ import java_cup.runtime.Symbol;
 %cup
 
 %eofval{
-    return createSymbol (Symbols.EOF);
+    return createSymbol (sym.EOF);
 %eofval}
 
 
@@ -60,61 +60,61 @@ MultiComment = \$\$(.|\n)*\$\$
 <YYINITIAL>{
     /* Reserved Keywords */
 
-    "and"           { return createSymbol(Symbols.AND); }
-    "fun"           { return createSymbol(Symbols.FUN); }
-    "nothing"       { return createSymbol(Symbols.NOTHING); }
-    "var"           { return createSymbol(Symbols.VAR); }
-    "char"          { return createSymbol(Symbols.CHAR); }
-    "if"            { return createSymbol(Symbols.IF); }
-    "or"            { return createSymbol(Symbols.OR); }
-    "while"         { return createSymbol(Symbols.WHILE); }
-    "div"           { return createSymbol(Symbols.DIV); }
-    "int"           { return createSymbol(Symbols.INT); }
-    "ref"           { return createSymbol(Symbols.REF); }
-    "do"            { return createSymbol(Symbols.DO); }
-    "mod"           { return createSymbol(Symbols.MOD); }
-    "return"        { return createSymbol(Symbols.RETURN); }
-    "else"          { return createSymbol(Symbols.ELSE); }
-    "not"           { return createSymbol(Symbols.NOT); }
-    "then"          { return createSymbol(Symbols.THEN); }
+    "and"           { return createSymbol(sym.AND); }
+    "fun"           { return createSymbol(sym.FUN); }
+    "nothing"       { return createSymbol(sym.NOTHING); }
+    "var"           { return createSymbol(sym.VAR); }
+    "char"          { return createSymbol(sym.CHAR); }
+    "if"            { return createSymbol(sym.IF); }
+    "or"            { return createSymbol(sym.OR); }
+    "while"         { return createSymbol(sym.WHILE); }
+    "div"           { return createSymbol(sym.DIV); }
+    "int"           { return createSymbol(sym.INT); }
+    "ref"           { return createSymbol(sym.REF); }
+    "do"            { return createSymbol(sym.DO); }
+    "mod"           { return createSymbol(sym.MOD); }
+    "return"        { return createSymbol(sym.RETURN); }
+    "else"          { return createSymbol(sym.ELSE); }
+    "not"           { return createSymbol(sym.NOT); }
+    "then"          { return createSymbol(sym.THEN); }
 
     /* Identifiers */
 
-    {Identifier}    { return createSymbol(Symbols.IDENTIFIER, yytext()); }
+    {Identifier}    { return createSymbol(sym.IDENTIFIER, yytext()); }
 
     /* Number */
 
-    {Integer}       { return createSymbol(Symbols.INT_LITERAL, Integer.valueof(yytext())); }
+    {Integer}       { return createSymbol(sym.INT_LITERAL, Integer.valueOf(yytext())); }
 
     /* Any single constant character */
 
-    {Match}   { return createSymbol(Symbols.CHAR_LITERAL, yytext()); }
+    {Match}   { return createSymbol(sym.CHAR_LITERAL, yytext()); }
 
     /* Operators */
 
-    "+"             { return createSymbol(Symbols.PLUS); }
-    "-"             { return createSymbol(Symbols.MINUS); }
-    "*"             { return createSymbol(Symbols.MULTILPLY); }
-    "/"             { return createSymbol(Symbols.DIVISION); }
-    "#"             { return createSymbol(Symbols.NEQUAL); }
-    "="             { return createSymbol(Symbols.ASSIGN); }
-    "<"             { return createSymbol(Symbols.LT); }      
-    ">"             { return createSymbol(Symbols.GT); }
-    "<="            { return createSymbol(Symbols.LE); }
-    ">="            { return createSymbol(Symbols.GE); }
+    "+"             { return createSymbol(sym.PLUS); }
+    "-"             { return createSymbol(sym.MINUS); }
+    "*"             { return createSymbol(sym.MULTIPLY); }
+    "/"             { return createSymbol(sym.DIVISION); }
+    "#"             { return createSymbol(sym.NEQUAL); }
+    "="             { return createSymbol(sym.ASSIGN); }
+    "<"             { return createSymbol(sym.LT); }      
+    ">"             { return createSymbol(sym.GT); }
+    "<="            { return createSymbol(sym.LE); }
+    ">="            { return createSymbol(sym.GE); }
 
     /* Spacers */
 
-    "("             { return createSymbol(Symbols.LPAREN); }
-    ")"             { return createSymbol(Symbols.RPAREN); }
-    "["             { return createSymbol(Symbols.LBRACKET); }
-    "]"             { return createSymbol(Symbols.RBRACKET); }
-    "{"             { return createSymbol(Symbols.LCURLY); }
-    "}"             { return createSymbol(Symbols.RCURLY); }
-    ","             { return createSymbol(Symbols.COMMA); }
-    ";"             { return createSymbol(Symbols.SEMICOLON); }
-    ":"             { return createSymbol(Symbols.COLON); }
-    "<-"            { return createSymbol(Symbols.PLIKE); }
+    "("             { return createSymbol(sym.LPAREN); }
+    ")"             { return createSymbol(sym.RPAREN); }
+    "["             { return createSymbol(sym.LBRACKET); }
+    "]"             { return createSymbol(sym.RBRACKET); }
+    "{"             { return createSymbol(sym.LCURLY); }
+    "}"             { return createSymbol(sym.RCURLY); }
+    ","             { return createSymbol(sym.COMMA); }
+    ";"             { return createSymbol(sym.SEMICOLON); }
+    ":"             { return createSymbol(sym.COLON); }
+    "<-"            { return createSymbol(sym.PLIKE); }
 
 
     /* Change state (Go and match strings) */
@@ -134,7 +134,7 @@ MultiComment = \$\$(.|\n)*\$\$
 <STRING>{
 
     \"                      { sb.append(yytext()); yybegin(YYINITIAL); 
-                                 return createSymbol(Symbols.STRING_LITERAL, sb.toString()); }
+                                 return createSymbol(sym.STRING_LITERAL, sb.toString()); }
 
     [^\n\r\"\'\\]+          { sb.append(yytext()); }
     \\n                     { sb.append(yytext()); }

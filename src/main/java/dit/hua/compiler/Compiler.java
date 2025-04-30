@@ -16,7 +16,7 @@ public class Compiler {
     
         Reader r = new InputStreamReader(System.in);
         Lexer l = new Lexer(r);
-        Parser p = new Parser(l);
+        parser p = new parser(l);
 
         try {
             Object result = p.parse().value;
