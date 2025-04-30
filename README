@@ -1,0 +1,4 @@
+##Compilation and Execution
+	```bash
+	java -cp target/compiler-1.0-SNAPSHOT.jar:/home/panos-varitis/.m2/repository/com/github/vbmacher/java-cup-runtime/11b-20160615-2/java-cup-runtime-11b-20160615-2.jar dit.hua.compiler.Compiler
+	```

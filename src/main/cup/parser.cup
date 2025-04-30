@@ -2,17 +2,7 @@
     This code is part of the compiler course in hua university
 */
 
-// package dit.hua.compiler;
 import java_cup.runtime.Symbol;
-// import java.util.Scanner;
-
-// parser code 
-// {:
-//     public static void main(String[] args) throws Exception {
-//         parser p = new parser(new Scanner(System.in));
-//         p.parse();
-//     }
-// :};
 
 //Terminal reserved words
 terminal AND, FUN, NOTHING, VAR, CHAR, IF, OR, WHILE, DIV, INT;
@@ -39,7 +29,55 @@ terminal java.lang.String STRING_LITERAL;
 terminal CHAR_LITERAL;
 
 non terminal program;
+non terminal func_def;
+non terminal header, local_def, block;
+non terminal local_def_list;
+non terminal fpar_def, ret_type;
+non terminal fpar_def_list;
+non terminal maybe_ref;
+non terminal fpar_type, id_list;
+non terminal data_type;
+non terminal type, int_literal_list;
+
+
 
 start with program;
 
-program ::= ;
+program ::= func_def;
+
+func_def ::= header local_def_list block;
+
+local_def_list ::= /*Zero or more*/
+                | local_def_list local_def
+                ;
+
+header ::= FUN IDENTIFIER LPAREN fpar_def fpar_def_list RPAREN COLON ret_type;
+ 
+
+fpar_def_list ::= /*Empty */
+                |fpar_def_list SEMICOLON fpar_def
+                ;
+
+fpar_def ::= maybe_ref IDENTIFIER id_list COLON fpar_type;
+
+maybe_ref ::= /*Empty*/
+            |REF
+            ;
+
+id_list ::= /*Empty*/ 
+          |id_list COMMA IDENTIFIER
+          ;  
+    
+data_type ::= INT
+            | CHAR
+            ;
+        
+type ::= data_type int_literal_list;
+
+int_literal_list ::= /*Empty*/
+                    |int_literal_list LBRACKET INT_LITERAL RBRACKET
+                    ;
+
+ret_type ::= data_type
+            |NOTHING
+            ;
