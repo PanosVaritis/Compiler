@@ -38,8 +38,14 @@ non terminal maybe_ref;
 non terminal fpar_type, id_list;
 non terminal data_type;
 non terminal type, int_literal_list;
-
-
+non terminal maybe_bracket;
+non terminal func_decl, var_def;
+non terminal stmt, l_value, expr, func_call, cond;
+non terminal maybe_stmt, maybe_expr;
+non terminal stmt_list;
+non terminal maybe_expr_2, expr_list;
+non terminal maybe_plus_minus, maybe_operator;
+non terminal maybe_logic, maybe_operator_2;
 
 start with program;
 
@@ -81,3 +87,93 @@ int_literal_list ::= /*Empty*/
 ret_type ::= data_type
             |NOTHING
             ;
+
+fpar_type ::= data_type maybe_bracket int_literal_list;
+
+maybe_bracket ::= /*Empty*/
+                |LBRACKET RBRACKET
+                ;
+
+local_def ::= func_def
+            |func_decl
+            |var_def
+            ;
+
+var_def ::= VAR IDENTIFIER id_list COLON type SEMICOLON;
+
+func_decl ::= header SEMICOLON;
+
+stmt ::= SEMICOLON
+        |l_value PLIKE expr SEMICOLON
+        |block
+        |func_call SEMICOLON
+        |IF cond THEN stmt maybe_stmt
+        |WHILE cond DO stmt
+        |RETURN maybe_expr SEMICOLON
+        ;
+
+maybe_stmt ::= /*Empty*/
+            |ELSE stmt
+            ;
+
+maybe_expr ::= /*Empty*/
+            |expr
+            ;
+
+block ::= LCURLY stmt_list RCURLY;
+
+stmt_list ::= /**Empty/
+            |stmt_list stmt
+            ;
+
+maybe_expr_2 ::= /*Empty*/
+                |expr expr_list
+                ;
+
+func_call ::= IDENTIFIER LPAREN maybe_expr_2 RPAREN;
+
+expr_list ::= /*Empty*/
+            |expr_list COMMA expr
+            ;
+
+l_value ::= IDENTIFIER
+           |STRING_LITERAL
+           |l_value LBRACKET expr RBRACKET
+           ; 
+
+expr ::= INT_LITERAL
+        |CHAR_LITERAL
+        |l_value
+        |func_call
+        |LPAREN expr RPAREN
+        |maybe_plus_minus expr
+        |expr maybe_operator expr
+        ;
+
+maybe_plus_minus ::= PLUS
+                    |MINUS
+                    ;
+
+maybe_operator ::= maybe_plus_minus
+                |MULTIPLY
+                |DIV
+                |MOD
+                ;
+
+cond ::= LPAREN cond RPAREN
+        |NOT cond
+        |cond maybe_logic cond
+        |expr maybe_operator_2 expr
+        ;
+
+maybe_logic ::= AND
+             |OR
+             ;
+
+maybe_operator_2 ::= ASSIGN
+                    |NEQUAL
+                    |LT
+                    |GT
+                    |LE
+                    |GE
+                    ;
