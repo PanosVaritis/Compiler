@@ -16,7 +16,7 @@ terminal java.lang.Integer INT_LITERAL;
 
 //Terminal operators
 terminal PLUS, MINUS, MULTIPLY;
-terminal NEQUAL, ASSIGN, LT, GT, LE, GE;
+terminal NEQUAL, EQUALS, LT, GT, LE, GE;
 
 //Terminal spacers
 terminal LPAREN, RPAREN, LBRACKET, RBRACKET;
@@ -27,6 +27,10 @@ terminal java.lang.String STRING_LITERAL;
 
 //Terminal for single constant characters
 terminal CHAR_LITERAL;
+
+//Terminal only for priority 
+terminal UMINUS, UPLUS;
+
 
 non terminal program;
 non terminal func_def;
@@ -46,12 +50,12 @@ non terminal stmt_list;
 non terminal maybe_expr_2, expr_list;
 
 
-// precedence left OR;
-// precedence left AND;
-// precedence left NOT;
-// precedence left ASSIGN, NEQUAL, LT, GT, LE, GE;
-// precedence left PLUS, MINUS;
-// precedence left MULTIPLY, DIV, MOD;
+precedence left OR;
+precedence left AND;
+precedence left PLUS, MINUS;
+precedence left MULTIPLY, DIV, MOD;
+precedence right UMINUS, UPLUS;
+
 
 start with program;
 
@@ -152,8 +156,8 @@ expr ::= INT_LITERAL
         |l_value
         |func_call
         |LPAREN expr RPAREN
-        |PLUS expr
-        |MINUS expr
+        |PLUS expr %prec UPLUS
+        |MINUS expr %prec UMINUS
         |expr PLUS expr
         |expr MINUS expr
         |expr MULTIPLY expr
@@ -165,7 +169,7 @@ cond ::= LPAREN cond RPAREN
         |NOT cond
         |cond AND cond
         |cond OR cond
-        |expr ASSIGN expr
+        |expr EQUALS expr
         |expr NEQUAL expr
         |expr LT expr
         |expr GT expr

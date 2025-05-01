@@ -96,7 +96,7 @@ MultiComment = \$\$(.|\n)*\$\$
     "-"             { return createSymbol(sym.MINUS); }
     "*"             { return createSymbol(sym.MULTIPLY); }
     "#"             { return createSymbol(sym.NEQUAL); }
-    "="             { return createSymbol(sym.ASSIGN); }
+    "="             { return createSymbol(sym.EQUALS); }
     "<"             { return createSymbol(sym.LT); }      
     ">"             { return createSymbol(sym.GT); }
     "<="            { return createSymbol(sym.LE); }
@@ -143,8 +143,5 @@ MultiComment = \$\$(.|\n)*\$\$
     \\\'                    { sb.append(yytext()); }
 
 }
-
-
-
 
 [^]             { throw new RuntimeException((yyline+1) + ":" + (yycolumn+1) + ": illegal character <"+ yytext()+">"); }
