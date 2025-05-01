@@ -15,7 +15,7 @@ terminal java.lang.String IDENTIFIER;
 terminal java.lang.Integer INT_LITERAL;
 
 //Terminal operators
-terminal PLUS, MINUS, MULTIPLY, DIVISION;
+terminal PLUS, MINUS, MULTIPLY;
 terminal NEQUAL, ASSIGN, LT, GT, LE, GE;
 
 //Terminal spacers
@@ -44,8 +44,14 @@ non terminal stmt, l_value, expr, func_call, cond;
 non terminal maybe_stmt, maybe_expr;
 non terminal stmt_list;
 non terminal maybe_expr_2, expr_list;
-non terminal maybe_plus_minus, maybe_operator;
-non terminal maybe_logic, maybe_operator_2;
+
+
+// precedence left OR;
+// precedence left AND;
+// precedence left NOT;
+// precedence left ASSIGN, NEQUAL, LT, GT, LE, GE;
+// precedence left PLUS, MINUS;
+// precedence left MULTIPLY, DIV, MOD;
 
 start with program;
 
@@ -146,34 +152,23 @@ expr ::= INT_LITERAL
         |l_value
         |func_call
         |LPAREN expr RPAREN
-        |maybe_plus_minus expr
-        |expr maybe_operator expr
+        |PLUS expr
+        |MINUS expr
+        |expr PLUS expr
+        |expr MINUS expr
+        |expr MULTIPLY expr
+        |expr DIV expr
+        |expr MOD expr
         ;
-
-maybe_plus_minus ::= PLUS
-                    |MINUS
-                    ;
-
-maybe_operator ::= maybe_plus_minus
-                |MULTIPLY
-                |DIV
-                |MOD
-                ;
 
 cond ::= LPAREN cond RPAREN
         |NOT cond
-        |cond maybe_logic cond
-        |expr maybe_operator_2 expr
+        |cond AND cond
+        |cond OR cond
+        |expr ASSIGN expr
+        |expr NEQUAL expr
+        |expr LT expr
+        |expr GT expr
+        |expr LE expr
+        |expr GE expr
         ;
-
-maybe_logic ::= AND
-             |OR
-             ;
-
-maybe_operator_2 ::= ASSIGN
-                    |NEQUAL
-                    |LT
-                    |GT
-                    |LE
-                    |GE
-                    ;
