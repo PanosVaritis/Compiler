@@ -52,6 +52,8 @@ non terminal maybe_expr_2, expr_list;
 
 precedence left OR;
 precedence left AND;
+precedence nonassoc NOT;
+precedence nonassoc LT, GT, LE, GE, NEQUAL, EQUALS; 
 precedence left PLUS, MINUS;
 precedence left MULTIPLY, DIV, MOD;
 precedence right UMINUS, UPLUS;
