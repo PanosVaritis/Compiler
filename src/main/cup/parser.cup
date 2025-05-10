@@ -146,7 +146,7 @@ maybe_expr ::= /*Empty*/
 
 block ::= LCURLY stmt_list RCURLY;
 
-stmt_list ::= /**Empty/
+stmt_list ::= /*Empty*/
             |stmt_list stmt
             ;
 
