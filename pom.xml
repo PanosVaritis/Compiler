@@ -65,7 +65,7 @@
                         <outputDirectory>${project.build.directory}/generated-sources/cup</outputDirectory>
                         <packageName>dit.hua.compiler</packageName>
                         <!-- <cupFile>${basedir}/src/main/cup/parser.cup</cupFile> -->
-                        <expectedConflicts>1</expectedConflicts>
+                        <expectedConflicts>2</expectedConflicts>
                         <progress>true</progress>
                         <dumpGrammar>true</dumpGrammar>
                         <!-- <dumpStates>true</dumpStates> -->

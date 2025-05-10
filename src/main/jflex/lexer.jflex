@@ -123,7 +123,7 @@ MultiComment = \$\$(.|\n)*\$\$
     /* Tokens that should be recognised but ignored*/
 
     {Empty}          {}
-    
+        
     {Comment}        {}
     
     {MultiComment}   {}

@@ -112,11 +112,13 @@ ret_type ::= data_type
             |NOTHING
             ;
 
-fpar_type ::= data_type maybe_bracket int_literal_list;
-
-maybe_bracket ::= /*Empty*/
-                |LBRACKET RBRACKET
+fpar_type ::= data_type int_literal_list
+                |data_type LBRACKET RBRACKET int_literal_list
                 ;
+
+// maybe_bracket ::= /*Empty*/
+//                 |LBRACKET RBRACKET
+//                 ;
 
 local_def ::= func_def
             |func_decl
