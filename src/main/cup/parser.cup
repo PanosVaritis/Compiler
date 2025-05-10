@@ -47,7 +47,6 @@ non terminal id_list;
 non terminal data_type;
 non terminal type;
 non terminal int_literal_list;
-non terminal maybe_bracket;
 non terminal func_decl;
 non terminal var_def;
 non terminal stmt;
@@ -82,7 +81,7 @@ local_def_list ::= /*Zero or more*/
                 ;
 
 header ::= FUN IDENTIFIER LPAREN fpar_def fpar_def_list RPAREN COLON ret_type
-        | FUN IDENTIFIER LPAREN RPAREN COLON ret_type
+        | FUN IDENTIFIER LPAREN RPAREN COLON ret_type 
         ;
  
 
@@ -114,14 +113,13 @@ ret_type ::= data_type
             |NOTHING
             ;
 
-fpar_type ::= data_type int_literal_list
-                |data_type LBRACKET RBRACKET int_literal_list
+fpar_type ::=  data_type
+                | data_type LBRACKET RBRACKET
+                |data_type LBRACKET RBRACKET LBRACKET INT_LITERAL RBRACKET
+                | data_type LBRACKET INT_LITERAL RBRACKET
+                | data_type LBRACKET INT_LITERAL RBRACKET LBRACKET INT_LITERAL RBRACKET
                 ;
-
-// maybe_bracket ::= /*Empty*/
-//                 |LBRACKET RBRACKET
-//                 ;
-
+             
 local_def ::= func_def
             |func_decl
             |var_def
