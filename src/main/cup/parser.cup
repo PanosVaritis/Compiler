@@ -34,20 +34,32 @@ terminal UMINUS, UPLUS;
 
 non terminal program;
 non terminal func_def;
-non terminal header, local_def, block;
+non terminal header;
+non terminal local_def;
+non terminal block;
 non terminal local_def_list;
-non terminal fpar_def, ret_type;
+non terminal fpar_def;
+non terminal ret_type;
 non terminal fpar_def_list;
 non terminal maybe_ref;
-non terminal fpar_type, id_list;
+non terminal fpar_type;
+non terminal id_list;
 non terminal data_type;
-non terminal type, int_literal_list;
+non terminal type;
+non terminal int_literal_list;
 non terminal maybe_bracket;
-non terminal func_decl, var_def;
-non terminal stmt, l_value, expr, func_call, cond;
-non terminal maybe_stmt, maybe_expr;
+non terminal func_decl;
+non terminal var_def;
+non terminal stmt;
+non terminal l_value;
+non terminal expr;
+non terminal func_call;
+non terminal cond;
+non terminal maybe_stmt;
+non terminal maybe_expr;
 non terminal stmt_list;
-non terminal maybe_expr_2, expr_list;
+non terminal maybe_expr_2;
+non terminal expr_list;
 
 
 precedence left OR;
@@ -62,7 +74,7 @@ precedence right UMINUS, UPLUS;
 start with program;
 
 program ::= func_def;
-
+        
 func_def ::= header local_def_list block;
 
 local_def_list ::= /*Zero or more*/

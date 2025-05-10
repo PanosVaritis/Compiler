@@ -31,7 +31,7 @@ public class Compiler {
 
             parser p = new parser(l);
 
-            p.parse();
+            Object result =  p.parse().value;
 
             System.out.println("Everything went ok");
 

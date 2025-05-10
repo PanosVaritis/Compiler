@@ -66,6 +66,12 @@
                         <packageName>dit.hua.compiler</packageName>
                         <!-- <cupFile>${basedir}/src/main/cup/parser.cup</cupFile> -->
                         <expectedConflicts>1</expectedConflicts>
+                        <progress>true</progress>
+                        <dumpGrammar>true</dumpGrammar>
+                        <!-- <dumpStates>true</dumpStates> -->
+                        <!-- <dumpTables>true</dumpTables> -->
+                        <!-- <time>true</time> -->
+                        <!-- <debug>true</debug> -->
                     </configuration>
             </plugin>
 
