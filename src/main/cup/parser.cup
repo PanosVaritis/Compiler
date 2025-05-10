@@ -81,7 +81,9 @@ local_def_list ::= /*Zero or more*/
                 | local_def_list local_def
                 ;
 
-header ::= FUN IDENTIFIER LPAREN fpar_def fpar_def_list RPAREN COLON ret_type;
+header ::= FUN IDENTIFIER LPAREN fpar_def fpar_def_list RPAREN COLON ret_type
+        | FUN IDENTIFIER LPAREN RPAREN COLON ret_type
+        ;
  
 
 fpar_def_list ::= /*Empty */
