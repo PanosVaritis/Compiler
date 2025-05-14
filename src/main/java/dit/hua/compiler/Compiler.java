@@ -22,11 +22,15 @@ public class Compiler {
 
             Lexer l = new Lexer(r);
 
-
+            //Method used for debuging purposes (Prints all the tokens recognized)
             // Symbol token;
             // while ((token = l.next_token()).sym != sym.EOF) {
             //     System.out.println("Token sym: " + token.sym + " | Value: " + token.value);
             // }
+
+            //Calls the parser in debug mode
+            // parser p = new parser(l);
+            // p.debug_parse();
 
 
             parser p = new parser(l);
