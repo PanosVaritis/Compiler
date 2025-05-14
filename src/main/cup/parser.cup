@@ -4,6 +4,18 @@
 
 import java_cup.runtime.Symbol;
 
+parser code
+{:
+        @Override
+        public void report_error(String message, Object info){
+                Symbol sym = (Symbol) info;
+                System.out.println ("Syntax error: "+message);
+                System.out.println("Line: "+sym.left);
+                System.out.println ("Column: "+sym.right);
+                System.out.println("Token value: "+sym.value);
+        }       
+:};
+
 //Terminal reserved words
 terminal AND, FUN, NOTHING, VAR, CHAR, IF, OR, WHILE, DIV, INT;
 terminal REF, DO, MOD, RETURN, ELSE, NOT, THEN;
