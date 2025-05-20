@@ -4,8 +4,6 @@
 
 import java_cup.runtime.Symbol;
 
-import dit.hua.compiler.type.*;
-
 parser code
 {:
         @Override
@@ -46,7 +44,7 @@ terminal CHAR_LITERAL;
 terminal UMINUS, UPLUS;
 
 
-non terminal Program program;
+non terminal program;
 non terminal func_def;
 non terminal header;
 non terminal local_def;
@@ -58,14 +56,14 @@ non terminal fpar_def_list;
 non terminal maybe_ref;
 non terminal fpar_type;
 non terminal id_list;
-non terminal DatatType data_type;
+non terminal data_type;
 non terminal type;
 non terminal int_literal_list;
 non terminal func_decl;
 non terminal var_def;
-non terminal Statement stmt;
-non terminal l_value LValue;
-non terminal expr Expression;
+non terminal stmt;
+non terminal l_value;
+non terminal expr;
 non terminal func_call;
 non terminal cond;
 non terminal maybe_stmt;
@@ -113,8 +111,8 @@ id_list ::= /*Empty*/
           |id_list COMMA IDENTIFIER
           ;  
     
-data_type ::= INT                               {: RESULT = BasicType.INT; :}       
-            | CHAR                              {: RESULT = BasicType.CHAR; :}  
+data_type ::= INT
+            | CHAR
             ;
         
 type ::= data_type int_literal_list;
@@ -129,7 +127,7 @@ ret_type ::= data_type
 
 fpar_type ::=  data_type
                 | data_type LBRACKET RBRACKET
-                | data_type LBRACKET RBRACKET LBRACKET INT_LITERAL RBRACKET
+                |data_type LBRACKET RBRACKET LBRACKET INT_LITERAL RBRACKET
                 | data_type LBRACKET INT_LITERAL RBRACKET
                 | data_type LBRACKET INT_LITERAL RBRACKET LBRACKET INT_LITERAL RBRACKET
                 ;
@@ -170,29 +168,29 @@ maybe_expr_2 ::= /*Empty*/
                 |expr expr_list
                 ;
 
-func_call ::= IDENTIFIER LPAREN maybe_expr_2 RPAREN;    {: RESULT = new}
+func_call ::= IDENTIFIER LPAREN maybe_expr_2 RPAREN;
 
 expr_list ::= /*Empty*/
             |expr_list COMMA expr
             ;
 
-l_value ::= IDENTIFIER:id                                {: RESULT = new LValue(id); :}
+l_value ::= IDENTIFIER
            |STRING_LITERAL
-           |l_value:lv LBRACKET expr:e RBRACKET          {: RESULT = new LValue(lv, e); :}
+           |l_value LBRACKET expr RBRACKET
            ; 
 
-expr ::= INT_LITERAL:i                            {: RESULT = new IntLiteral(i); :}
-        |CHAR_LITERAL:c                           {: RESULT = new CharLiteral(i); :}
+expr ::= INT_LITERAL
+        |CHAR_LITERAL
         |l_value
         |func_call
-        |LPAREN expr:e RPAREN                     {: RESULT = e; :}
-        |PLUS expr:e %prec UPLUS                  {: RESULT = new UnaryOp(UnaryOp.Operator.Plus, e); :}
-        |MINUS expr:e %prec UMINUS                {: RESULT = new UnaryOp(UnaryOp.Operator.Minus, e); :}
-        |expr:le PLUS expr:re                     {: RESULT = new BinOp(BinOp.Operator.Plus, le,re); :}
-        |expr:le MINUS expr:re                    {: RESULT = new BinOp(BinOp.Operator.Minus, le,re); :}
-        |expr:le MULTIPLY expr:re                 {: RESULT = new BinOp(BinOp.Operator.Multiple, le,re); :}
-        |expr:le DIV expr:re                      {: RESULT = new BinOp(BinOp.Operator.Div, le,re); :}
-        |expr:le MOD expr:re                      {: RESULT = new BinOp(BinOp.Operator.Mod, le,re); :}
+        |LPAREN expr RPAREN
+        |PLUS expr %prec UPLUS
+        |MINUS expr %prec UMINUS
+        |expr PLUS expr
+        |expr MINUS expr
+        |expr MULTIPLY expr
+        |expr DIV expr
+        |expr MOD expr
         ;
 
 cond ::= LPAREN cond RPAREN

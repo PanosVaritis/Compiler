@@ -1,3 +1,4 @@
 #Ignore the targer directory (Maven build output!!)
 target/
 examples/
+.vscode/

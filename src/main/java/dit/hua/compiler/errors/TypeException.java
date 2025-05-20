@@ -1,4 +1,4 @@
-package gr.hua.dit.compiler.errors;
+package dit.hua.compiler.errors;
 
 public class TypeException extends SemanticException {
 
