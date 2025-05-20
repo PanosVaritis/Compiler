@@ -1,5 +1,5 @@
 package dit.hua.compiler.ast;
 
-public class Statement {
+public class Statement extends AST {
 
 }
