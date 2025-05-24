@@ -180,7 +180,7 @@ l_value ::= IDENTIFIER
            |l_value LBRACKET expr RBRACKET
            ; 
 
-expr ::= INT_LITERAL
+expr ::= INT_LITERAL:l                          {:RESULT = new IntegerLiteralExpression(l):}
         |CHAR_LITERAL
         |l_value
         |func_call
