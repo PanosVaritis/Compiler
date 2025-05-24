@@ -3,7 +3,7 @@
 */
 
 import java_cup.runtime.Symbol;
-import ast*;
+import ast.*;
 
 parser code
 {:
@@ -66,7 +66,7 @@ non terminal stmt;
 non terminal l_value;
 non terminal Expression expr;
 non terminal func_call;
-non terminal cond;
+non terminal Condition cond;
 non terminal maybe_stmt;
 non terminal maybe_expr;
 non terminal stmt_list;
@@ -184,7 +184,7 @@ expr ::= INT_LITERAL:l                          {:RESULT = new IntegerLiteralExp
         |CHAR_LITERAL:cl                        {:RESULT = new CharLiteralExpression(cl);:}
         |l_value
         |func_call
-        |LPAREN expr RPAREN
+        |LPAREN expr:exp RPAREN                 {:RESULT = new ParenthesisExpresiion(exp);:}
         |PLUS expr:e1 %prec UPLUS               {:RESULT = new UnaryExpression(Operator.PLUS, e1);:}
         |MINUS expr:e1 %prec UMINUS             {:RESULT = new UnaryExpression(Operator.MINUS, e2);:}
         |expr:e1 PLUS expr:e2                   {:RESULT = new BinaryExpression(Operator.PLUS, e1, e2);:}
@@ -197,10 +197,10 @@ cond ::= LPAREN cond RPAREN
         |NOT cond
         |cond AND cond
         |cond OR cond
-        |expr EQUALS expr
-        |expr NEQUAL expr
-        |expr LT expr
-        |expr GT expr
-        |expr LE expr
-        |expr GE expr
+        |expr:e1 EQUALS expr:e2                       {:RESULT = new BinaryCondition(Operator.EQUALS, e1, e2);:}
+        |expr:e1 NEQUAL expr:e2                       {:RESULT = new BinaryCondition(Operator.NEQUAL, e1, e2);:} 
+        |expr:e1 LT expr:e2                           {:RESULT = new BinaryCondition(Operator.LT, e1, e2);:}
+        |expr:e1 GT expr:e2                           {:RESULT = new BinaryCondition(Operator.GT, e1, e2);:}
+        |expr:e1 LE expr:e2                           {:RESULT = new BinaryCondition(Operator.LE, e1, e2);:}
+        |expr:e1 GE expr:e2                           {:RESULT = new BinaryCondition(Operator.GE), e1, e2;:}
         ;
