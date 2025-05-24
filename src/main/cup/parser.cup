@@ -45,7 +45,7 @@ terminal CHAR_LITERAL;
 terminal UMINUS, UPLUS;
 
 
-non terminal program;
+non terminal Program program;
 non terminal func_def;
 non terminal header;
 non terminal local_def;
@@ -193,10 +193,10 @@ expr ::= INT_LITERAL:l                          {:RESULT = new IntegerLiteralExp
         |expr:e1 MOD expr:e2                    {:RESULT = new BinaryExpression(Operator.MOD, e1, e2);:}
         ;
 
-cond ::= LPAREN cond RPAREN
-        |NOT cond
-        |cond AND cond
-        |cond OR cond
+cond ::= LPAREN cond:c1 RPAREN                        {:RESULT = new ParenthesisCondition(c1);:}               
+        |NOT cond:c1                                  {:RESULT = new LogicalCondition(LogicalOperator.NOT, c1);:} 
+        |cond:c1 AND cond:c2                          {:RESULT = new LogicalCondition(LogicalOperator.AND, c1, c2);:} 
+        |cond:c1 OR cond:c2                           {:RESULT = new LogicalCondition(LogicalOperator.OR), c1, c2;:}  
         |expr:e1 EQUALS expr:e2                       {:RESULT = new BinaryCondition(Operator.EQUALS, e1, e2);:}
         |expr:e1 NEQUAL expr:e2                       {:RESULT = new BinaryCondition(Operator.NEQUAL, e1, e2);:} 
         |expr:e1 LT expr:e2                           {:RESULT = new BinaryCondition(Operator.LT, e1, e2);:}
