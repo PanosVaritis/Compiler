@@ -5,6 +5,7 @@ public enum Operator {
     PLUS ("+"),
     MINUS ("-"),
     MULTIPLY ("*"),
+    MOD ("mod"),
     NEQUAL ("#"),
     EQUALS ("="),
     LT ("<"),

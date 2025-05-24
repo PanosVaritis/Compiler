@@ -3,6 +3,7 @@
 */
 
 import java_cup.runtime.Symbol;
+import ast*;
 
 parser code
 {:
@@ -63,7 +64,7 @@ non terminal func_decl;
 non terminal var_def;
 non terminal stmt;
 non terminal l_value;
-non terminal expr;
+non terminal Expression expr;
 non terminal func_call;
 non terminal cond;
 non terminal maybe_stmt;
@@ -184,13 +185,12 @@ expr ::= INT_LITERAL
         |l_value
         |func_call
         |LPAREN expr RPAREN
-        |PLUS expr %prec UPLUS
-        |MINUS expr %prec UMINUS
-        |expr PLUS expr
-        |expr MINUS expr
-        |expr MULTIPLY expr
-        |expr DIV expr
-        |expr MOD expr
+        |PLUS expr:e1 %prec UPLUS               {:RESULT = new UnaryExpression(Operator.PLUS, e1);:}
+        |MINUS expr:e1 %prec UMINUS             {:RESULT = new UnaryExpression(Operator.MINUS, e2);:}
+        |expr:e1 PLUS expr:e2                   {:RESULT = new BinaryExpression(Operator.PLUS, e1, e2);:}
+        |expr:e1 MINUS expr:e2                  {:RESULT = new BinaryExpression(Operator.MINUS, e1, e2);:}
+        |expr:e1 MULTIPLY expr:e2               {:RESULT = new BinaryExpression(Operator.MULTIPLY, e1, e2);:}
+        |expr:e1 MOD expr:e2                    {:RESULT = new BinaryExpression(Operator.MOD, e1, e2);:}
         ;
 
 cond ::= LPAREN cond RPAREN
