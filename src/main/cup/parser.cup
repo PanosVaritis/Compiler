@@ -187,7 +187,7 @@ expr ::= INT_LITERAL:l                          {:RESULT = new IntegerLiteralExp
         |func_call
         |LPAREN expr:exp RPAREN                 {:RESULT = new ParenthesisExpresiion(exp);:}
         |PLUS expr:e1 %prec UPLUS               {:RESULT = new UnaryExpression(Operator.PLUS, e1);:}
-        |MINUS expr:e1 %prec UMINUS             {:RESULT = new UnaryExpression(Operator.MINUS, e2);:}
+        |MINUS expr:e1 %prec UMINUS             {:RESULT = new UnaryExpression(Operator.MINUS, e1);:}
         |expr:e1 PLUS expr:e2                   {:RESULT = new BinaryExpression(Operator.PLUS, e1, e2);:}
         |expr:e1 MINUS expr:e2                  {:RESULT = new BinaryExpression(Operator.MINUS, e1, e2);:}
         |expr:e1 MULTIPLY expr:e2               {:RESULT = new BinaryExpression(Operator.MULTIPLY, e1, e2);:}
@@ -197,11 +197,11 @@ expr ::= INT_LITERAL:l                          {:RESULT = new IntegerLiteralExp
 cond ::= LPAREN cond:c1 RPAREN                        {:RESULT = new ParenthesisCondition(c1);:}               
         |NOT cond:c1                                  {:RESULT = new LogicalCondition(LogicalOperator.NOT, c1);:} 
         |cond:c1 AND cond:c2                          {:RESULT = new LogicalCondition(LogicalOperator.AND, c1, c2);:} 
-        |cond:c1 OR cond:c2                           {:RESULT = new LogicalCondition(LogicalOperator.OR), c1, c2;:}  
+        |cond:c1 OR cond:c2                           {:RESULT = new LogicalCondition(LogicalOperator.OR, c1, c2);:}  
         |expr:e1 EQUALS expr:e2                       {:RESULT = new BinaryCondition(Operator.EQUALS, e1, e2);:}
         |expr:e1 NEQUAL expr:e2                       {:RESULT = new BinaryCondition(Operator.NEQUAL, e1, e2);:} 
         |expr:e1 LT expr:e2                           {:RESULT = new BinaryCondition(Operator.LT, e1, e2);:}
         |expr:e1 GT expr:e2                           {:RESULT = new BinaryCondition(Operator.GT, e1, e2);:}
         |expr:e1 LE expr:e2                           {:RESULT = new BinaryCondition(Operator.LE, e1, e2);:}
-        |expr:e1 GE expr:e2                           {:RESULT = new BinaryCondition(Operator.GE), e1, e2;:}
+        |expr:e1 GE expr:e2                           {:RESULT = new BinaryCondition(Operator.GE, e1, e2);:}
         ;
