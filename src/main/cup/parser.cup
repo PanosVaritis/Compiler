@@ -183,8 +183,16 @@ local_def_list ::= /*Zero or more*/
                 {:RESULT = addToList(list, ld);:}
                 ;
 
-header ::= FUN IDENTIFIER LPAREN fpar_def fpar_def_list RPAREN COLON ret_type
-        | FUN IDENTIFIER LPAREN RPAREN COLON ret_type 
+header ::= FUN IDENTIFIER:name LPAREN fpar_def:fpd fpar_def_list:fpdl RPAREN COLON ret_type:rt
+        {:
+              List<Parameter> params = createParametersFromDef(fpd.isRef, fpd.names, fpd.type);
+              for (ParameterDefInfo info : fpdl){
+                params.addAll(createParametersFromDef(info.isRef, info.names, info.type));
+              }  
+              RESULT = new HeaderInfo(name, params, rt);
+        :}
+        | FUN IDENTIFIER:name LPAREN RPAREN COLON ret_type:rt
+        {:RESULT = new HeaderInfo(name, createEmptyList(), rt);:}
         ;
  
 
@@ -194,7 +202,13 @@ fpar_def_list ::= /*Empty */
                 {:RESULT = addToList(list, fpd);:}
                 ;
 
-fpar_def ::= maybe_ref IDENTIFIER id_list COLON fpar_type;
+fpar_def ::= maybe_ref:ref IDENTIFIER:name id_list:names COLON fpar_type:type
+        {:
+                List<String> allNames = createList(name);
+                allNames.addAll(names);
+                RESULT = new ParameterDefInfo(ref, allNames, type);
+        :}
+        ;
 
 maybe_ref ::= /*Empty*/
             {:RESULT = false;:}
@@ -230,11 +244,20 @@ ret_type ::= data_type:dt
             {:RESULT = new NothingType();:}
             ;
 
-fpar_type ::=  data_type
-                | data_type LBRACKET RBRACKET
-                |data_type LBRACKET RBRACKET LBRACKET INT_LITERAL RBRACKET
-                | data_type LBRACKET INT_LITERAL RBRACKET
-                | data_type LBRACKET INT_LITERAL RBRACKET LBRACKET INT_LITERAL RBRACKET
+fpar_type ::=  data_type:dt
+                {:RESULT = dt;:}
+                | data_type:dt LBRACKET RBRACKET
+                {:RESULT = new ArrayType(dt, createEmptyList());:}
+                |data_type:dt LBRACKET RBRACKET LBRACKET INT_LITERAL:dim RBRACKET
+                {:RESULT = new ArrayType(dt, createList(dim));:}
+                | data_type:dt LBRACKET INT_LITERAL:dim RBRACKET
+                {:RESULT = new ArrayType(dt, createList(dim));:}
+                | data_type:dt LBRACKET INT_LITERAL:dim1 RBRACKET LBRACKET INT_LITERAL:dim2 RBRACKET
+                {:
+                        List<Integer> dims = createList(dim1);
+                        dims.add(dim2);
+                        RESULT = new ArrayType(dt, dims);
+                :}
                 ;
              
 local_def ::= func_def:fd
@@ -245,7 +268,13 @@ local_def ::= func_def:fd
             {:RESULT = vd;:}
             ;
 
-var_def ::= VAR IDENTIFIER id_list COLON type SEMICOLON;
+var_def ::= VAR IDENTIFIER:name id_list:names COLON type:t SEMICOLON
+        {:
+                List<String> allNames = createList(name);
+                allNames.addAll(names);
+                RESULT = new VariableDeclaration(allNames, t);
+        :}
+        ;
 
 func_decl ::= header:h SEMICOLON
         {:RESULT = new FunctionDeclaration(h.name, h.parameters, h.returnType);:}
@@ -290,7 +319,13 @@ stmt_list ::= /*Empty*/
             ;
 
 maybe_expr_2 ::= /*Empty*/
-                |expr expr_list
+                {:RESULT = createEmptyList();:}
+                |expr:e expr_list:list
+                {:
+                        List<Expression> args = createList(e);
+                        args.addAll(list);
+                        RESULT = args;
+                :}
                 ;
 
 func_call ::= IDENTIFIER:name LPAREN maybe_expr_2:args RPAREN
