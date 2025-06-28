@@ -4,6 +4,11 @@
 
 import java_cup.runtime.Symbol;
 import ast.*;
+import dit.hua.compiler.ast.expressions.*;
+import dit.hua.compiler.ast.definitions.*;
+import dit.hua.compiler.ast.statements.*;
+import dit.hua.compiler.ast.types.*;
+import java.util.*;
 
 parser code
 {:
@@ -14,7 +19,49 @@ parser code
                 System.out.println("Line: "+sym.left);
                 System.out.println ("Column: "+sym.right);
                 System.out.println("Token value: "+sym.value);
-        }       
+        }      
+
+        // Helper method to create a list with a single element
+        public static <T> List<T> createList(T element) {
+            List<T> list = new ArrayList<>();
+            if (element != null) {
+                list.add(element);
+            }
+            return list;
+        }
+
+        // Helper method to add element to existing list
+        public static <T> List<T> addToList(List<T> list, T element) {
+            if (list == null) {
+                list = new ArrayList<>();
+            }
+            if (element != null) {
+                list.add(element);
+            }
+            return list;
+        }
+
+        // Helper method to create empty list
+        public static <T> List<T> createEmptyList() {
+            return new ArrayList<T>();
+        }
+
+        // Helper method to build array type from base type and dimensions
+        public static Type buildArrayType(Type baseType, List<Integer> dimensions) {
+            if (dimensions == null || dimensions.isEmpty()) {
+                return baseType;
+            }
+            return new ArrayType(baseType, dimensions);
+        }
+
+        // Helper method to extract parameters from fpar_def
+        public static List<Parameter> createParametersFromDef(boolean isRef, List<String> names, Type type) {
+            List<Parameter> params = new ArrayList<>();
+            for (String name : names) {
+                params.add(new Parameter(name, type, isRef));
+            }
+            return params;
+        }
 :};
 
 //Terminal reserved words
@@ -39,7 +86,8 @@ terminal LCURLY, RCURLY, COMMA, SEMICOLON, COLON, PLIKE;
 terminal java.lang.String STRING_LITERAL;
 
 //Terminal for single constant characters
-terminal CHAR_LITERAL;
+// terminal CHAR_LITERAL;
+terminal java.lang.String CHAR_LITERAL;
 //terminal java.lang.Character CHAR_LITERAL
 
 //Terminal only for priority 
@@ -47,32 +95,67 @@ terminal UMINUS, UPLUS;
 
 
 non terminal Program program;
-non terminal func_def;
-non terminal header;
-non terminal local_def;
-non terminal block;
-non terminal local_def_list;
-non terminal fpar_def;
-non terminal ret_type;
-non terminal fpar_def_list;
-non terminal maybe_ref;
-non terminal fpar_type;
-non terminal id_list;
-non terminal data_type;
-non terminal type;
-non terminal int_literal_list;
-non terminal func_decl;
-non terminal var_def;
-non terminal stmt;
-non terminal l_value;
+non terminal FunctionDefinition func_def;
+non terminal HeaderInfo header;
+non terminal List<LocalDefinition> local_def;
+non terminal BlockStatement block;
+non terminal List<LocalDefinition> local_def_list;
+non terminal ParameterDefInfo fpar_def;
+non terminal Type ret_type;
+non terminal List<ParameterDefInfo> fpar_def_list;
+non terminal Boolean maybe_ref;
+non terminal Type fpar_type;
+non terminal List<String> id_list;
+non terminal Type data_type;
+non terminal Type type;
+non terminal List<Integer> int_literal_list;
+non terminal FunctionDeclaration func_decl;
+non terminal VariableDeclaration var_def;
+non terminal Statement stmt;
+non terminal LValue l_value;
 non terminal Expression expr;
-non terminal func_call;
+non terminal FunctionCallInfo func_call;
 non terminal Condition cond;
-non terminal maybe_stmt;
-non terminal maybe_expr;
-non terminal stmt_list;
-non terminal maybe_expr_2;
-non terminal expr_list;
+non terminal Statement maybe_stmt;
+non terminal Expression maybe_expr;
+non terminal List<Statement> stmt_list;
+non terminal List<Expression> maybe_expr_2;
+non terminal List<Expression> expr_list;
+
+//Helper classes used to store intermediate results
+class HeaderInfo {
+    public String name;
+    public List<Parameter> parameters;
+    public Type returnType;
+    
+    public HeaderInfo(String name, List<Parameter> parameters, Type returnType) {
+        this.name = name;
+        this.parameters = parameters;
+        this.returnType = returnType;
+    }
+}
+
+class ParameterDefInfo {
+    public boolean isRef;
+    public List<String> names;
+    public Type type;
+    
+    public ParameterDefInfo(boolean isRef, List<String> names, Type type) {
+        this.isRef = isRef;
+        this.names = names;
+        this.type = type;
+    }
+}
+
+class FunctionCallInfo {
+    public String name;
+    public List<Expression> arguments;
+    
+    public FunctionCallInfo(String name, List<Expression> arguments) {
+        this.name = name;
+        this.arguments = arguments;
+    }
+}
 
 
 precedence left OR;
@@ -86,12 +169,18 @@ precedence right UMINUS, UPLUS;
 
 start with program;
 
-program ::= func_def;
+program ::= func_def:fd
+        {:RESULT = new Program(fd);:}
+        ;
         
-func_def ::= header local_def_list block;
+func_def ::= header:h local_def_list:ldl block:b
+        {:RESULT = new FunctionDefinition(h.name, h.parameters, h.returnType, ldl, b);:}
+        ;
 
-local_def_list ::= /*Zero or more*/
-                | local_def_list local_def
+local_def_list ::= /*Zero or more*/     
+                {:RESULT = createEmptyList();:}
+                | local_def_list:list local_def:ld
+                {:RESULT = addToList(list, ld);:}
                 ;
 
 header ::= FUN IDENTIFIER LPAREN fpar_def fpar_def_list RPAREN COLON ret_type
@@ -100,31 +189,45 @@ header ::= FUN IDENTIFIER LPAREN fpar_def fpar_def_list RPAREN COLON ret_type
  
 
 fpar_def_list ::= /*Empty */
-                |fpar_def_list SEMICOLON fpar_def
+                {:RESULT = createEmptyList();:}
+                |fpar_def_list:list SEMICOLON fpar_def:fpd
+                {:RESULT = addToList(list, fpd);:}
                 ;
 
 fpar_def ::= maybe_ref IDENTIFIER id_list COLON fpar_type;
 
 maybe_ref ::= /*Empty*/
+            {:RESULT = false;:}
             |REF
+            {:RESULT = true;:}
             ;
 
-id_list ::= /*Empty*/ 
-          |id_list COMMA IDENTIFIER
+id_list ::= /*Empty*/
+          {:RESULT = createEmptyList();:}
+          |id_list:list COMMA IDENTIFIER:name
+          {:RESULT = addToList(list, name);:}
           ;  
     
-data_type ::= INT
-            | CHAR
+data_type ::= INT       
+            {:RESULT = new IntType();:}
+            | CHAR      
+            {:RESULT = new CharType();:}
             ;
         
-type ::= data_type int_literal_list;
+type ::= data_type:dt int_literal_list:dims
+        {:RESULT = buildArrayType(dt, dims);:}
+        ;
 
 int_literal_list ::= /*Empty*/
-                    |int_literal_list LBRACKET INT_LITERAL RBRACKET
+                    {:RESULT = createEmptyList();:}
+                    |int_literal_list:list LBRACKET INT_LITERAL:dim RBRACKET
+                    {:RESULT = addToList(list, dim);:}
                     ;
 
-ret_type ::= data_type
+ret_type ::= data_type:dt
+            {:RESULT = dt;:}
             |NOTHING
+            {:RESULT = new NothingType();:}
             ;
 
 fpar_type ::=  data_type
@@ -134,74 +237,122 @@ fpar_type ::=  data_type
                 | data_type LBRACKET INT_LITERAL RBRACKET LBRACKET INT_LITERAL RBRACKET
                 ;
              
-local_def ::= func_def
-            |func_decl
-            |var_def
+local_def ::= func_def:fd
+            {:RESULT = fd;:}    
+            |func_decl:fdcl
+            {:RESULT = fdcl;:}
+            |var_def:vd
+            {:RESULT = vd;:}
             ;
 
 var_def ::= VAR IDENTIFIER id_list COLON type SEMICOLON;
 
-func_decl ::= header SEMICOLON;
+func_decl ::= header:h SEMICOLON
+        {:RESULT = new FunctionDeclaration(h.name, h.parameters, h.returnType);:}
+        ;
 
 stmt ::= SEMICOLON
-        |l_value PLIKE expr SEMICOLON
-        |block
-        |func_call SEMICOLON
-        |IF cond THEN stmt maybe_stmt
-        |WHILE cond DO stmt
-        |RETURN maybe_expr SEMICOLON
+        {:RESULT = new EmptyStatement();:}
+        |l_value:lv PLIKE expr:e SEMICOLON
+        {:RESULT = new AssignmentStatement(lv, e);:}
+        |block:b
+        {:RESULT = b;:}
+        |func_call:fc SEMICOLON
+        {:RESULT = new new FunctionCallStatement(fc.name, fc.arguments);:}
+        |IF cond:c THEN stmt:s1 maybe_stmt:s2
+        {:RESULT = new IfStatement(c, s1, s2);:}
+        |WHILE cond:c DO stmt:s
+        {:RESULT = new WhileStatement(c, s);:}
+        |RETURN maybe_expr:e SEMICOLON
+        {:RESULT = new ReturnStatement(e);:}
         ;
 
 maybe_stmt ::= /*Empty*/
-            |ELSE stmt
+            {:RESULT = null;:}
+            |ELSE stmt:s
+            {:RESULT = s;:}
             ;
 
 maybe_expr ::= /*Empty*/
-            |expr
+            {:RESULT = null;:}
+            |expr:e
+            {:RESULT = e;:}
             ;
 
-block ::= LCURLY stmt_list RCURLY;
+block ::= LCURLY stmt_list:stmts RCURLY
+          {:RESULT = new BlockStatement(stmts);:}
+          ;
 
 stmt_list ::= /*Empty*/
-            |stmt_list stmt
+            {:RESULT = createEmptyList();:}
+            |stmt_list:list stmt:s
+            {:RESULT = addToList(list, s);:}
             ;
 
 maybe_expr_2 ::= /*Empty*/
                 |expr expr_list
                 ;
 
-func_call ::= IDENTIFIER LPAREN maybe_expr_2 RPAREN;
+func_call ::= IDENTIFIER:name LPAREN maybe_expr_2:args RPAREN
+             {:RESULT = new FunctionCallInfo(name, args);:}
+             ;
 
 expr_list ::= /*Empty*/
-            |expr_list COMMA expr
+            {:RESULT = createEmptyList();:}
+            |expr_list:list COMMA expr:e
+            {:RESULT = addToList(list, e);:}
             ;
 
-l_value ::= IDENTIFIER
-           |STRING_LITERAL
-           |l_value LBRACKET expr RBRACKET
+l_value ::= IDENTIFIER:name
+           {:RESULT = new IdentifierLValue(name);:}
+           |STRING_LITERAL:str
+           {:RESULT = new StringLiteralLValue(str);:}
+           |l_value:lv LBRACKET expr:idx RBRACKET
+           {:RESULT = new ArrayAccessLValue(lv, idx);:}
            ; 
 
-expr ::= INT_LITERAL:l                          {:RESULT = new IntegerLiteralExpression(l);:}
-        |CHAR_LITERAL:cl                        {:RESULT = new CharLiteralExpression(cl);:}
-        |l_value
-        |func_call
-        |LPAREN expr:exp RPAREN                 {:RESULT = new ParenthesisExpresiion(exp);:}
-        |PLUS expr:e1 %prec UPLUS               {:RESULT = new UnaryExpression(Operator.PLUS, e1);:}
-        |MINUS expr:e1 %prec UMINUS             {:RESULT = new UnaryExpression(Operator.MINUS, e1);:}
-        |expr:e1 PLUS expr:e2                   {:RESULT = new BinaryExpression(Operator.PLUS, e1, e2);:}
-        |expr:e1 MINUS expr:e2                  {:RESULT = new BinaryExpression(Operator.MINUS, e1, e2);:}
-        |expr:e1 MULTIPLY expr:e2               {:RESULT = new BinaryExpression(Operator.MULTIPLY, e1, e2);:}
-        |expr:e1 MOD expr:e2                    {:RESULT = new BinaryExpression(Operator.MOD, e1, e2);:}
+expr ::= INT_LITERAL:l                          
+        {:RESULT = new IntegerLiteralExpression(l);:}
+        |CHAR_LITERAL:cl                        
+        {:RESULT = new CharLiteralExpression(cl);:}
+        |l_value:lv
+        {:RESULT = lv;:}
+        |func_call:fc
+        {:RESULT = new FunctionCallExpression(fc.name, fc.arguments);:}
+        |LPAREN expr:exp RPAREN                 
+        {:RESULT = new ParenthesisExpresiion(exp);:}
+        |PLUS expr:e1 %prec UPLUS               
+        {:RESULT = new UnaryExpression(Operator.PLUS, e1);:}
+        |MINUS expr:e1 %prec UMINUS             
+        {:RESULT = new UnaryExpression(Operator.MINUS, e1);:}
+        |expr:e1 PLUS expr:e2                   
+        {:RESULT = new BinaryExpression(Operator.PLUS, e1, e2);:}
+        |expr:e1 MINUS expr:e2                  
+        {:RESULT = new BinaryExpression(Operator.MINUS, e1, e2);:}
+        |expr:e1 MULTIPLY expr:e2               
+        {:RESULT = new BinaryExpression(Operator.MULTIPLY, e1, e2);:}
+        |expr:e1 MOD expr:e2                    
+        {:RESULT = new BinaryExpression(Operator.MOD, e1, e2);:}
         ;
 
-cond ::= LPAREN cond:c1 RPAREN                        {:RESULT = new ParenthesisCondition(c1);:}               
-        |NOT cond:c1                                  {:RESULT = new LogicalCondition(LogicalOperator.NOT, c1);:} 
-        |cond:c1 AND cond:c2                          {:RESULT = new LogicalCondition(LogicalOperator.AND, c1, c2);:} 
-        |cond:c1 OR cond:c2                           {:RESULT = new LogicalCondition(LogicalOperator.OR, c1, c2);:}  
-        |expr:e1 EQUALS expr:e2                       {:RESULT = new BinaryCondition(Operator.EQUALS, e1, e2);:}
-        |expr:e1 NEQUAL expr:e2                       {:RESULT = new BinaryCondition(Operator.NEQUAL, e1, e2);:} 
-        |expr:e1 LT expr:e2                           {:RESULT = new BinaryCondition(Operator.LT, e1, e2);:}
-        |expr:e1 GT expr:e2                           {:RESULT = new BinaryCondition(Operator.GT, e1, e2);:}
-        |expr:e1 LE expr:e2                           {:RESULT = new BinaryCondition(Operator.LE, e1, e2);:}
-        |expr:e1 GE expr:e2                           {:RESULT = new BinaryCondition(Operator.GE, e1, e2);:}
+cond ::= LPAREN cond:c1 RPAREN
+        {:RESULT = new ParenthesisCondition(c1);:}               
+        |NOT cond:c1                                  
+        {:RESULT = new LogicalCondition(LogicalOperator.NOT, c1);:} 
+        |cond:c1 AND cond:c2                          
+        {:RESULT = new LogicalCondition(LogicalOperator.AND, c1, c2);:} 
+        |cond:c1 OR cond:c2                           
+        {:RESULT = new LogicalCondition(LogicalOperator.OR, c1, c2);:}  
+        |expr:e1 EQUALS expr:e2                       
+        {:RESULT = new BinaryCondition(Operator.EQUALS, e1, e2);:}
+        |expr:e1 NEQUAL expr:e2                       
+        {:RESULT = new BinaryCondition(Operator.NEQUAL, e1, e2);:} 
+        |expr:e1 LT expr:e2                           
+        {:RESULT = new BinaryCondition(Operator.LT, e1, e2);:}
+        |expr:e1 GT expr:e2                           
+        {:RESULT = new BinaryCondition(Operator.GT, e1, e2);:}
+        |expr:e1 LE expr:e2                           
+        {:RESULT = new BinaryCondition(Operator.LE, e1, e2);:}
+        |expr:e1 GE expr:e2                           
+        {:RESULT = new BinaryCondition(Operator.GE, e1, e2);:}
         ;
