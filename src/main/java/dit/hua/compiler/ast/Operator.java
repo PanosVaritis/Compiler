@@ -1,5 +1,11 @@
 package dit.hua.compiler.ast;
 
+/*
+ * Enumeration of all binary and unary operations
+ * Matcher the operators defined in the grammar
+ */
+
+
 public enum Operator {
 
     PLUS ("+"),
