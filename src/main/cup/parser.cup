@@ -122,42 +122,6 @@ non terminal List<Statement> stmt_list;
 non terminal List<Expression> maybe_expr_2;
 non terminal List<Expression> expr_list;
 
-//Helper classes used to store intermediate results
-class HeaderInfo {
-    public String name;
-    public List<Parameter> parameters;
-    public Type returnType;
-    
-    public HeaderInfo(String name, List<Parameter> parameters, Type returnType) {
-        this.name = name;
-        this.parameters = parameters;
-        this.returnType = returnType;
-    }
-}
-
-class ParameterDefInfo {
-    public boolean isRef;
-    public List<String> names;
-    public Type type;
-    
-    public ParameterDefInfo(boolean isRef, List<String> names, Type type) {
-        this.isRef = isRef;
-        this.names = names;
-        this.type = type;
-    }
-}
-
-class FunctionCallInfo {
-    public String name;
-    public List<Expression> arguments;
-    
-    public FunctionCallInfo(String name, List<Expression> arguments) {
-        this.name = name;
-        this.arguments = arguments;
-    }
-}
-
-
 precedence left OR;
 precedence left AND;
 precedence nonassoc NOT;
