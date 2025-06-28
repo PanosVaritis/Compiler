@@ -287,7 +287,7 @@ stmt ::= SEMICOLON
         |block:b
         {:RESULT = b;:}
         |func_call:fc SEMICOLON
-        {:RESULT = new new FunctionCallStatement(fc.name, fc.arguments);:}
+        {:RESULT = new FunctionCallStatement(fc.name, fc.arguments);:}
         |IF cond:c THEN stmt:s1 maybe_stmt:s2
         {:RESULT = new IfStatement(c, s1, s2);:}
         |WHILE cond:c DO stmt:s
