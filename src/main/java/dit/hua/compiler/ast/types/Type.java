@@ -1,6 +1,6 @@
 package dit.hua.compiler.ast.types;
 
-import dit.hua.compiler.ast.ASTNode;
+
 
 /* 
  * Base class for all the types in grace language
@@ -8,12 +8,13 @@ import dit.hua.compiler.ast.ASTNode;
  * int, char, array, nothing
  */
 
-public abstract class Type extends ASTNode {
+public abstract class Type {
     
     public Type(){
-        super();
+
     }
 
     public abstract boolean equals (Object other);
     public abstract String toString();
+    public abstract boolean isCompatible(Type other);
 }

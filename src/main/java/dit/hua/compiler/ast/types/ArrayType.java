@@ -3,7 +3,7 @@ package dit.hua.compiler.ast.types;
 import java.util.ArrayList;
 import java.util.List;
 
-import dit.hua.compiler.ast.ASTVisitor;
+
 
 
 //Class that represents array types int[10], char[5],..
@@ -42,9 +42,13 @@ public class ArrayType extends Type {
     }
 
     @Override
-    public void accept(ASTVisitor visitor) {
-        visitor.visit(this);        
+    public boolean isCompatible(Type other) {
+        if (!(other instanceof ArrayType)) return false;
+        ArrayType otherArray = (ArrayType) other;
+        return elementType.isCompatible(otherArray.elementType) && 
+               dimensions.equals(otherArray.dimensions);
     }
+
 
     public Type getElementType() {
         return elementType;

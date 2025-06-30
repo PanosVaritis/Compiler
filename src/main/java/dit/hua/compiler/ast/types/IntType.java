@@ -2,7 +2,6 @@ package dit.hua.compiler.ast.types;
 
 //Matches the production data_type :: = int
 
-import dit.hua.compiler.ast.ASTVisitor;
 
 public class IntType extends Type{
 
@@ -17,7 +16,7 @@ public class IntType extends Type{
     }
 
     @Override
-    public void accept(ASTVisitor visitor) {
-        visitor.visit(this);        
+    public boolean isCompatible(Type other) {
+        return other instanceof IntType;
     }
 }
