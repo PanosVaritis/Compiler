@@ -16,7 +16,7 @@ public class ParenthesisCondition extends Condition{
         this.condition = condition;
     }
 
-    public Condition geCondition(){
+    public Condition getCondition(){
         return condition;
     }
 
