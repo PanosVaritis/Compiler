@@ -1,8 +1,8 @@
 package dit.hua.compiler.ast.definitions;
 
-import java.lang.reflect.Type;
 
 import dit.hua.compiler.ast.ASTVisitor;
+import dit.hua.compiler.ast.types.Type;
 
 /**
  * Represents function parameters with type and pass-by mode.

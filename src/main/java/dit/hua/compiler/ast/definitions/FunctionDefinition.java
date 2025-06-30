@@ -1,11 +1,11 @@
 package dit.hua.compiler.ast.definitions;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import dit.hua.compiler.ast.ASTVisitor;
 import dit.hua.compiler.ast.statements.BlockStatement;
+import dit.hua.compiler.ast.types.Type;
 
 /**
  * Represents complete function definitions with body.
