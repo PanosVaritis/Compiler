@@ -1,7 +1,7 @@
 /*
     This code is part of the compiler course in hua university
 */
-
+// package dit.hua.compiler;
 import java_cup.runtime.Symbol;
 import ast.*;
 import dit.hua.compiler.ast.expressions.*;
@@ -319,7 +319,7 @@ expr ::= INT_LITERAL:l
         |func_call:fc
         {:RESULT = new FunctionCallExpression(fc.name, fc.arguments);:}
         |LPAREN expr:exp RPAREN                 
-        {:RESULT = new ParenthesisExpresiion(exp);:}
+        {:RESULT = new ParenthesisExpression(exp);:}
         |PLUS expr:e1 %prec UPLUS               
         {:RESULT = new UnaryExpression(Operator.PLUS, e1);:}
         |MINUS expr:e1 %prec UMINUS             
