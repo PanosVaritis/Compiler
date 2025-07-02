@@ -1,6 +1,7 @@
 package dit.hua.compiler.ast.expressions;
 
 import dit.hua.compiler.ast.ASTNode;
+import dit.hua.compiler.ast.ASTVisitor;
 
 /**
  * Base class for boolean conditions used in if/while statements.
@@ -17,4 +18,6 @@ public abstract class Condition extends ASTNode{
         super();
     }
 
+    @Override
+    public abstract void accept(ASTVisitor visitor);
 }

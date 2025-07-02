@@ -1,8 +1,9 @@
 package dit.hua.compiler.ast.expressions;
 
-import java.lang.reflect.Type;
 
 import dit.hua.compiler.ast.ASTNode;
+import dit.hua.compiler.ast.ASTVisitor;
+import dit.hua.compiler.ast.types.Type;
 
 /* 
  * Base class for all the expressions
@@ -28,4 +29,7 @@ public abstract class Expression extends ASTNode{
     public void setType(Type type) {
         this.type = type;
     }
+
+    @Override
+    public abstract void accept(ASTVisitor visitor);
 }
