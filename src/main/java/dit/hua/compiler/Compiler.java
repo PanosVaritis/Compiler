@@ -4,6 +4,9 @@
 
 package dit.hua.compiler;
 import java.io.*;
+
+import dit.hua.compiler.ast.ASTPrettyPrinter;
+import dit.hua.compiler.ast.Program;
 import java_cup.runtime.Symbol;
 
 
@@ -36,6 +39,13 @@ public class Compiler {
             parser p = new parser(l);
 
             Object result =  p.parse().value;
+
+            // Code that tests the functionality of the ast tree
+            // Program program = (Program) parser.parse().value;
+            // ASTPrettyPrinter printer = new ASTPrettyPrinter();
+            // program.accept(printer);
+            // System.out.println(printer.getOutput());
+
 
             System.out.println("Everything went ok");
 

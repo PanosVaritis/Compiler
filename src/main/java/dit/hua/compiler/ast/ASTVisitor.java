@@ -4,8 +4,6 @@ package dit.hua.compiler.ast;
 import dit.hua.compiler.ast.expressions.*;
 import dit.hua.compiler.ast.statements.*;
 import dit.hua.compiler.ast.definitions.*;
-import dit.hua.compiler.ast.types.*;
-
 
 /*
  * Visitor interface for traversing the ast
@@ -45,10 +43,4 @@ public interface ASTVisitor {
     void visit(BinaryCondition binCond);
     void visit(LogicalCondition logCond);
     void visit(ParenthesisCondition parenCond);
-
-
-    void visit(IntType intType);
-    void visit(CharType charType);
-    void visit(ArrayType arrayType);
-    void visit(NothingType nothingType);
 }
