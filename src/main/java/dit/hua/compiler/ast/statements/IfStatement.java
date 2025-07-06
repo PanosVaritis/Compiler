@@ -1,8 +1,8 @@
 package dit.hua.compiler.ast.statements;
 
-import java.util.concurrent.locks.Condition;
 
 import dit.hua.compiler.ast.ASTVisitor;
+import dit.hua.compiler.ast.expressions.Condition;
 
 /**
  * Represents if-then-else statements.

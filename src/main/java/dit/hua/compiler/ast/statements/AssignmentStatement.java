@@ -1,8 +1,8 @@
 package dit.hua.compiler.ast.statements;
 
-import java.beans.Expression;
 
 import dit.hua.compiler.ast.ASTVisitor;
+import dit.hua.compiler.ast.expressions.Expression;
 import dit.hua.compiler.ast.expressions.LValue;
 
 /**

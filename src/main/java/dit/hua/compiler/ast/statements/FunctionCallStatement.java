@@ -1,10 +1,10 @@
 package dit.hua.compiler.ast.statements;
 
-import java.beans.Expression;
 import java.util.ArrayList;
 import java.util.List;
 
 import dit.hua.compiler.ast.ASTVisitor;
+import dit.hua.compiler.ast.expressions.Expression;
 
 /**
  * Represents function calls used as statements (procedures).

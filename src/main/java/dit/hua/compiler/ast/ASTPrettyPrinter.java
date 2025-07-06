@@ -222,8 +222,8 @@ public class ASTPrettyPrinter implements ASTVisitor{
         printIndent();
         assignment.getTarget().accept(this);
         print(" <- ");
-        // assignment.getValue().accept(this);
-        assignment.getValue().accept((ASTVisitor) this); 
+        assignment.getValue().accept(this);
+        // assignment.getValue().accept((ASTVisitor) this); 
         println(";");
     }
 
