@@ -38,21 +38,24 @@ public class Compiler {
 
             parser p = new parser(l);
 
-            Object result =  p.parse().value;
+            Program program = (Program) p.parse().value;
 
-            // Code that tests the functionality of the ast tree
-            // Program program = (Program) parser.parse().value;
-            // ASTPrettyPrinter printer = new ASTPrettyPrinter();
-            // program.accept(printer);
-            // System.out.println(printer.getOutput());
+            System.out.println("=== AST STRUCTURE ===");
+
+            // Object result =  p.parse().value;
+
+            ASTPrettyPrinter printer = new ASTPrettyPrinter();
+            program.accept(printer);
+            System.out.println(printer.getOutput());
+            System.out.println("====================");
 
 
             System.out.println("Everything went ok");
 
         } catch (Exception e){
             System.out.println("Syntax error: "+e.getMessage());
+            e.printStackTrace();
         
         }
     }
 }
-
