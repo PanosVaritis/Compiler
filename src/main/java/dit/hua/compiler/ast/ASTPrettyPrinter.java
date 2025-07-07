@@ -1,7 +1,7 @@
 package dit.hua.compiler.ast;
 
 
-import dit.hua.compiler.ast.ASTVisitor;
+// import dit.hua.compiler.ast.ASTVisitor;
 import dit.hua.compiler.ast.definitions.FunctionDeclaration;
 import dit.hua.compiler.ast.definitions.FunctionDefinition;
 import dit.hua.compiler.ast.definitions.LocalDefinition;
@@ -27,10 +27,10 @@ import dit.hua.compiler.ast.statements.IfStatement;
 import dit.hua.compiler.ast.statements.ReturnStatement;
 import dit.hua.compiler.ast.statements.Statement;
 import dit.hua.compiler.ast.statements.WhileStatement;
-import dit.hua.compiler.ast.types.ArrayType;
-import dit.hua.compiler.ast.types.CharType;
-import dit.hua.compiler.ast.types.IntType;
-import dit.hua.compiler.ast.types.NothingType;
+// import dit.hua.compiler.ast.types.ArrayType;
+// import dit.hua.compiler.ast.types.CharType;
+// import dit.hua.compiler.ast.types.IntType;
+// import dit.hua.compiler.ast.types.NothingType;
 import dit.hua.compiler.ast.types.Type;
 
 public class ASTPrettyPrinter implements ASTVisitor{
